@@ -5,6 +5,7 @@ using Notes.Application.Interfaces;
 using Notes.Application;
 using Notes.Persistence;
 using Notes.WebApi.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);

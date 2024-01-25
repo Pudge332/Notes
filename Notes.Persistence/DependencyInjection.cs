@@ -10,10 +10,10 @@ namespace Notes.Persistence
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            var contionString = configuration["DbConnection"];
+            
             services.AddDbContext<NoteDbContext>(options =>
             {
-                options.UseSqlServer(contionString);
+                options.UseSqlServer(@"Server=.\SQLEXPRESS;Database=NotesDB;Trusted_Connection=True;Trust Server Certificate=true;");
             });
 
             services.AddScoped<INotesDbContext>(provider => provider.GetService<NoteDbContext>());
