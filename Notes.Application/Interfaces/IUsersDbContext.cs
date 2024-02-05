@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Notes.Domain;
+using Notes.Users;
 
 namespace Notes.Application.Interfaces
 {
-    public interface INotesDbContext
+    public interface IUsersDbContext
     {
-        DbSet<Note> Notes { get; set; }
+        DbSet<User> Users { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

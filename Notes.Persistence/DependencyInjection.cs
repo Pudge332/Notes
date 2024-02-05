@@ -18,6 +18,13 @@ namespace Notes.Persistence
 
             services.AddScoped<INotesDbContext>(provider => provider.GetService<NoteDbContext>());
 
+            services.AddDbContext<UsersDbContext>(options =>
+            {
+                options.UseSqlServer(@"Server=.\SQLEXPRESS;Database=UsersDB;Trusted_Connection=True;Trust Server Certificate=true;");
+            });
+
+            services.AddScoped<IUsersDbContext>(provider => provider.GetService<UsersDbContext>());
+
             return services;
         }
     }

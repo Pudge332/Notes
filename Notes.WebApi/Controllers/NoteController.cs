@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Notes.Application.Notes.Commands.CreateNote;
 using Notes.Application.Notes.Commands.DeleteNote;
 using Notes.Application.Notes.Commands.UpdateNote;
 using Notes.Application.Notes.Queries.GetNoteDetails;
 using Notes.Application.Notes.Queries.GetNoteList;
+using Notes.Application.Users.Queries.GetUserList;
 using Notes.WebApi.Models;
 
 namespace Notes.WebApi.Controllers
 {
     [Route("api/[controller]")]
+    //[Authorize]
     public class NoteController : BaseController
     {
         private readonly IMapper _mapper;
@@ -17,11 +20,23 @@ namespace Notes.WebApi.Controllers
         public NoteController(IMapper mapper) => _mapper = mapper;
 
         [HttpGet]
-        public async Task<ActionResult<NoteListVm>> GetAll()
+        //public async Task<ActionResult<NoteListVm>> GetAll()
+        //{
+        //    var query = new GetNoteListQuery
+        //    {
+        //        UserId = UserId
+        //    };
+
+        //    var vm = await Mediator.Send(query);
+        //    return Ok(vm);
+        //}
+
+        [HttpGet]
+        public async Task<ActionResult<UserListVm>> GetAllUsers()
         {
-            var query = new GetNoteListQuery
+            var query = new GetUserListQuery
             {
-                UserId = UserId
+                Id = Guid.NewGuid()
             };
 
             var vm = await Mediator.Send(query);
