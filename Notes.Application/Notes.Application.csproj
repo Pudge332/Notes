@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Notes.Users\Notes.Users.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Users\Commands\" />
-  </ItemGroup>
-
 </Project>

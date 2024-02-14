@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title> Вход </title>
+</head>
+<body>
+    <h2> Вход </h2>
+    <div>
+        <p>
+            Логин <br/>
+            <input id="Login" />
+        </p>
+        <p>
+            Пароль <br/>
+            <input id="Password" />
+        </p>
+        <p>
+            <button id="submit"> Войти </button>
+        </p>
+    </div>
+
+    <script>
+        async function loginUser(userLogin, userPassword) {
+            const response = await fetch("api/user/login", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    Login: userLogin,
+                    Password: userPassword
+            })
+        });
+        }
+        document.getElementById("submit").addEventListener("click", async () => {
+            const password = document.getElementById("Password").value;
+            const login = document.getElementById("Login").value; 
+            //Лучше добавить проверку
+            await loginUser(login, password);
+        });
+    </script>
+</body>
+</html>

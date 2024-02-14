@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes.Persistence", "Notes.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes.WebApi", "Notes.WebApi\Notes.WebApi.csproj", "{91CF87D1-B516-4DC9-9EA2-05BE8693C51A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Users", "Notes.Users\Notes.Users.csproj", "{1545C059-F181-4AEA-9720-05CF4D9B3A99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes.Users", "Notes.Users\Notes.Users.csproj", "{1545C059-F181-4AEA-9720-05CF4D9B3A99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

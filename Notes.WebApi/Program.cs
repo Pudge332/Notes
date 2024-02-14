@@ -7,6 +7,8 @@ using Notes.Application;
 using Notes.Persistence;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Notes.WebApi.Controllers;
+using Notes.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
@@ -20,26 +22,34 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     var secretKey = configuration.GetSection("JWTSettings:SecretKey").Value;
     var issuer = configuration.GetSection("JWTSettings.Issuer").Value;
     var audience = configuration.GetSection("JwtSetting.Audience").Value;
+    var expiresHours = configuration.GetSection("JwtSetting.ExpiresHours").Value;
     var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-    services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).
-    AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
-            ValidateIssuer = true,
-            ValidIssuer = issuer,
-            ValidateAudience = true,
-            ValidAudience = audience,
-            ValidateLifetime = true,
-            IssuerSigningKey = signingKey,
-            ValidateIssuerSigningKey = true
-        };
-    });
+            options.TokenValidationParameters = new()
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["one-small-detail"];
+
+                    return Task.CompletedTask;
+                }
+            };
+        });
+    services.AddAuthorization();
+    services.AddControllersWithViews();
+    services.AddSingleton<CurrentUserService, CurrentUserService>();
+    services.AddScoped<JwtProvider, JwtProvider>();
     services.AddAutoMapper(config =>
     {
         config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
@@ -62,6 +72,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 }
 void Configure(WebApplication app) 
 {
+    app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Login}/{id?}");
     app.UseRouting();
     app.UseHttpsRedirection();
     app.UseAuthentication();

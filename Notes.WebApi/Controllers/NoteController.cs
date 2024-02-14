@@ -12,7 +12,7 @@ using Notes.WebApi.Models;
 namespace Notes.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class NoteController : BaseController
     {
         private readonly IMapper _mapper;
@@ -20,31 +20,19 @@ namespace Notes.WebApi.Controllers
         public NoteController(IMapper mapper) => _mapper = mapper;
 
         [HttpGet]
-        //public async Task<ActionResult<NoteListVm>> GetAll()
-        //{
-        //    var query = new GetNoteListQuery
-        //    {
-        //        UserId = UserId
-        //    };
-
-        //    var vm = await Mediator.Send(query);
-        //    return Ok(vm);
-        //}
-
-        [HttpGet]
-        public async Task<ActionResult<UserListVm>> GetAllUsers()
+        public async Task<ActionResult<NoteListVm>> GetAllNotes()
         {
-            var query = new GetUserListQuery
+            var query = new GetNoteListQuery
             {
-                Id = Guid.NewGuid()
+                UserId = UserId
             };
-
+            Console.WriteLine(UserId);
             var vm = await Mediator.Send(query);
             return Ok(vm);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NoteDetailsVm>> Get(Guid id)
+        public async Task<ActionResult<NoteDetailsVm>> GetNote(Guid id)
         {
             var query = new GetNoteDetailsQuery
             {
@@ -57,7 +45,7 @@ namespace Notes.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateNoteDto createNoteDto)
+        public async Task<ActionResult<Guid>> CreateNote([FromBody] CreateNoteDto createNoteDto)
         {
             var command = _mapper.Map<CreateNoteCommand>(createNoteDto);
             command.UserId = UserId;
@@ -67,7 +55,7 @@ namespace Notes.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody] UpdateNoteDto updateNoteDto)
+        public async Task<ActionResult> UpdateNote([FromBody] UpdateNoteDto updateNoteDto)
         {
             var command = _mapper.Map<UpdateNoteCommand>(updateNoteDto);
             command.UserId = UserId;
@@ -76,7 +64,7 @@ namespace Notes.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete( Guid id)
+        public async Task<ActionResult> DeleteNote( Guid id)
         {
             var command = new DeleteNoteCommand
             {
