@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Notes.WebApi.Controllers;
 using Notes.WebApi.Services;
+using Notes.WebApi.Components;
+using Microsoft.AspNetCore.Antiforgery;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);
@@ -18,6 +20,9 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
+    services.AddRazorComponents()
+        .AddInteractiveServerComponents();
+    services.AddHttpClient();
     services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
     var secretKey = configuration.GetSection("JWTSettings:SecretKey").Value;
     var issuer = configuration.GetSection("JWTSettings.Issuer").Value;
@@ -72,15 +77,18 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 }
 void Configure(WebApplication app) 
 {
-    app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Login}/{id?}");
+    //app.MapControllerRoute(
+    //name: "default",
+    //pattern: "{controller=Home}/{action=Login}");
+    app.MapRazorComponents<App>().
+        AddInteractiveServerRenderMode();
     app.UseRouting();
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseCors("AllowAll");
     app.MapControllers();
+    app.UseAntiforgery();
     app.UseEndpoints(_ => { });
 
     using (var scope = app.Services.CreateScope())

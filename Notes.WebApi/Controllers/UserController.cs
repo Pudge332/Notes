@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Notes.Application.Notes.Commands.CreateNote;
 using Notes.Application.Users.Commands;
 using Notes.Application.Users.Queries.GetUser;
+using Notes.Application.Users.Queries.GetUserByLogin;
 using Notes.Application.Users.Queries.GetUserList;
 using Notes.Users;
 using Notes.WebApi.Models;
@@ -39,6 +40,7 @@ namespace Notes.WebApi.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<CreateUserDto>> LoginUser([FromBody] UserVm userVm)
         {
+            Console.WriteLine(userVm.Login);
             var query = new GetUserQuery
             {
                 Login = userVm.Login,
@@ -68,12 +70,23 @@ namespace Notes.WebApi.Controllers
             Console.WriteLine(vm.Id);
             Console.WriteLine(User.Identity.IsAuthenticated);
             Console.WriteLine(token);
-            return Ok(vm);
+            return Ok(vm.Id);
         }
 
         [HttpPost]
         public async Task<ActionResult<CreateUserDto>> CreateUser([FromBody] CreateUserDto createUserDto)
         {
+            var getUser = new GetUserByLoginQuery
+            {
+                Login = createUserDto.Login
+            };
+            var result = await Mediator.Send(getUser);
+
+            if(result != default)
+            {
+                Console.WriteLine("User User");
+                return StatusCode(409);
+            }
             var command = _mapper.Map<CreateUserCommand>(createUserDto);
             var userId = await Mediator.Send(command);
 

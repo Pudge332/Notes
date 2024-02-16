@@ -1,0 +1,65 @@
+﻿@page "/registration"
+@using System.Net.Http.Json;
+@using System.Text.Json.Serialization;
+@using System.Text.Json;
+@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.AspNetCore.Components.Forms;
+@using Notes.Application.Users.Queries.GetUser;
+@rendermode InteractiveServer
+@inject IHttpClientFactory ClientFactory;
+@inject NavigationManager NavigationManager;
+
+<h2> Регистрация </h2>
+<div>
+    <p>
+        Логин <br />
+        <InputText @bind-Value="userData.Login" />
+    </p>
+    <p>
+        Пароль <br />
+        <InputText @bind-Value="userData.Password" />
+    </p>
+    <p>
+        <button @onclick="Submit"> Зарегистрироваться </button>
+    </p>
+    <h3> @message </h3>
+</div>
+
+
+@code {
+    UserVm userData = new();
+    HttpClient httpClient = null!;
+    string message = "";
+    protected override async Task OnInitializedAsync()
+    {
+        httpClient = ClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7296/api/user");
+    }
+
+    bool CheckData()
+    {
+        if ((userData.Login != String.Empty) && (userData.Password != String.Empty))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    async Task Submit()
+    {
+        var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, userData);
+        var statusCode = ((int)response.StatusCode);
+        if(statusCode == 409)
+        {
+            message = "Логин уже существует";
+        }
+        else
+        {
+            message = "Аккаунт создан";
+            NavigationManager.NavigateTo("https://localhost:7296/login");
+        }
+    }
+}
