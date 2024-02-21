@@ -1,0 +1,126 @@
+﻿@page "/api/notes"
+@using System.Net.Http.Json;
+@using System.Text.Json.Serialization;
+@using System.Text.Json;
+@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.AspNetCore.Components.Forms;
+@using Notes.Application.Notes.Queries.GetNoteList;
+@using Notes.Domain;
+@using Notes.WebApi.Models;
+@rendermode InteractiveServer
+@inject IHttpClientFactory ClientFactory;
+@inject NavigationManager NavigationManager;
+
+<h2>Заметки</h2>
+<div>
+    <p>
+        Title:<br />
+        <input @bind-value="note.Title" />
+    </p>
+    <p>
+        Details:<br />
+        <input type="text" @bind-value="note.Details" />
+    </p>
+    <p>
+        <button @onclick="Submit"> Сохранить </button>
+    </p>
+    <p> @message </p>
+</div>
+<table>
+    <thead><tr><th>Title</th><th>Details</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var note in notesList)
+        {
+            <tr>
+                <td>@note.Title</td>
+                <td>@note.Details</td>
+                <td>
+                    <button @onclick="() => Change(note)"> Изменить</button>
+                    <button @onclick="async () => await DeleteNote(note.Id)"> Удалить</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    string message = "";
+    UserNotes userNotes = new UserNotes();
+    List<Note> notesList = new List<Note>();
+    Note note = new()
+    {
+        Id = Guid.Empty
+    };
+    HttpClient httpClient = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        httpClient = ClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("https://localhost:7296/api/note");
+        await LoadData();
+    }
+
+    async Task Submit()
+    {
+        if (note.Title == String.Empty || note.Details == String.Empty)
+        {
+            message = "Некорректные данные";
+            return;
+        }
+
+        if(note.Id != Guid.Empty)
+        {
+            await UpdateNote();
+        }
+        else
+        {
+            await CreateNote();
+        }
+
+        note.Id = Guid.Empty;
+
+        await LoadData();
+    }
+
+    void Change(Note noteToChange)
+    {
+        note.Id = noteToChange.Id;
+        note.Title = noteToChange.Title;
+        note.Details = noteToChange.Details;
+    }
+
+    async Task DeleteNote(Guid noteGuid)
+    {
+        var response = await httpClient.DeleteAsync($"{httpClient.BaseAddress}/{noteGuid}");
+        await LoadData();
+    }
+
+    async Task UpdateNote()
+    {
+        UpdateNoteDto updateNoteData = new UpdateNoteDto
+        {
+            Id = note.Id,
+            Title = note.Title,
+            Details = note.Details
+        };
+
+        var response = await httpClient.PutAsJsonAsync(httpClient.BaseAddress, updateNoteData);
+        await LoadData();
+    }
+    async Task CreateNote()
+    {
+        CreateNoteDto createNoteData = new CreateNoteDto
+        {
+            Title = note.Title,
+            Details = note.Details
+        };
+
+
+        var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, createNoteData);
+        await LoadData();
+    }
+    async Task LoadData()
+    {
+        notesList = await httpClient.GetFromJsonAsync<List<Note>>(httpClient.BaseAddress);
+    }
+}

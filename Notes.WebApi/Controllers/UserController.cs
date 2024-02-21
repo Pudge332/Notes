@@ -65,7 +65,7 @@ namespace Notes.WebApi.Controllers
                 Password = vm.Password
             };
             var token = _jwtProvider.GenerateToken(user);
-            HttpContext.Response.Cookies.Append("one-small-detail", token);
+            HttpContext.Response.Cookies.Append("one-small-detail", token, new CookieOptions() { SameSite = SameSiteMode.Lax }); //Подозрительное решение с куки, понять почему они инога не появляются
             _currentUserService.UserId = vm.Id;
             Console.WriteLine(vm.Id);
             Console.WriteLine(User.Identity.IsAuthenticated);

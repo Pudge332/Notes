@@ -50,6 +50,11 @@
 
     async Task Submit()
     {
+        if(!CheckData())
+        {
+            message = "Некорректные данные";
+            return;
+        }
         var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, userData);
         var statusCode = ((int)response.StatusCode);
         if(statusCode == 409)

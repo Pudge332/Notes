@@ -54,9 +54,10 @@
     {
         var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, userData);
         var statusCode = ((int)response.StatusCode);
+        
         if (statusCode == 200)
         {
-            NavigationManager.NavigateTo($"https://localhost:7296/api/note");
+            NavigationManager.NavigateTo("https://localhost:7296/api/notes");
         }
     }
 }
