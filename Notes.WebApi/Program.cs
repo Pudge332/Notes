@@ -7,7 +7,6 @@ using Notes.Application;
 using Notes.Persistence;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Notes.WebApi.Controllers;
 using Notes.WebApi.Services;
 using Notes.WebApi.Components;
 using Microsoft.AspNetCore.Antiforgery;

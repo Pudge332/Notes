@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
 using Notes.Application.Common.Mappings;
-using Notes.Application.Notes.Queries.GetNoteDetails;
-using Notes.Domain;
 using Notes.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Notes.Application.Users.Queries.GetUser
 {

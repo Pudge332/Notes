@@ -27,13 +27,15 @@
     <p> @message </p>
 </div>
 <table>
-    <thead><tr><th>Title</th><th>Details</th><th></th></tr></thead>
+    <thead><tr><th>Название</th><th>Описание</th><th>Дата создания</th><th>Дата изменения</th></tr></thead>
     <tbody>
         @foreach (var note in notesList)
         {
             <tr>
                 <td>@note.Title</td>
                 <td>@note.Details</td>
+                <td>@note.CreationDate</td>
+                <td>@(dataString = (note.EditDate == null) ? " -- " : note.EditDate.ToString()) </td>
                 <td>
                     <button @onclick="() => Change(note)"> Изменить</button>
                     <button @onclick="async () => await DeleteNote(note.Id)"> Удалить</button>
@@ -45,6 +47,7 @@
 
 @code {
     string message = "";
+    string dataString = "";
     UserNotes userNotes = new UserNotes();
     List<Note> notesList = new List<Note>();
     Note note = new()

@@ -23,7 +23,6 @@
             <button @onclick="Submit"> Войти </button>
         </p>
         <h3> @message </h3>
-        <h3> @message1 </h3>
     </div>
 
 
@@ -31,7 +30,7 @@
     UserVm userData = new();
     HttpClient httpClient = null!;
     string message = "";
-    string message1 = "";
+
     protected override async Task OnInitializedAsync()
     {
         httpClient = ClientFactory.CreateClient();
@@ -52,6 +51,12 @@
 
     async Task Submit()
     {
+        if(!CheckData())
+        {
+            message = "Некорректные данные";
+            return;
+        }
+
         var response = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, userData);
         var statusCode = ((int)response.StatusCode);
         

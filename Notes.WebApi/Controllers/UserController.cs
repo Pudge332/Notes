@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Notes.Application.Notes.Commands.CreateNote;
 using Notes.Application.Users.Commands;
 using Notes.Application.Users.Queries.GetUser;
 using Notes.Application.Users.Queries.GetUserByLogin;
@@ -13,6 +13,7 @@ using System.Security.Claims;
 namespace Notes.WebApi.Controllers
 {
     [Route("api/[controller]")]
+
     public class UserController : BaseController
     {
         private readonly IMapper _mapper;
@@ -26,6 +27,7 @@ namespace Notes.WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<UserListVm>> GetAllUsers() 
         {
             var query = new GetUserListQuery

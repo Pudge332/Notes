@@ -1,0 +1,26 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<h1> Добро пожаловать на сайт Notes </h1>
+<h3> Войдите или зарегистрируйтесь для доступа к возможностям сайта </h3>
+<div>
+    <p>
+        <br />
+        <button @onclick="Login"> Войти </button>
+    </p>
+    <p>
+        <br />
+        <button @onclick="Registration"> Зарегистрироваться </button>
+    </p>
+</div>
+@code {
+    void Login()
+    {
+        NavigationManager.NavigateTo("https://localhost:7296/login");
+    }
+    void Registration()
+    {
+        NavigationManager.NavigateTo("https://localhost:7296/registration");
+    }
+}

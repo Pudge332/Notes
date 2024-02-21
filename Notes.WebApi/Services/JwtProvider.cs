@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Notes.WebApi.Authorization;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,9 +6,9 @@ using System.Security.Claims;
 using System.Text;
 using Notes.Users;
 
-namespace Notes.WebApi.Controllers
+namespace Notes.WebApi.Services
 {
-    public class JwtProvider 
+    public class JwtProvider
     {
         private readonly JWTSettings _options;
 
@@ -23,9 +22,9 @@ namespace Notes.WebApi.Controllers
             Claim[] claims = [new("userId", user.Id.ToString())];
 
             var signingCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), 
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
                 SecurityAlgorithms.HmacSha256);
-            
+
             var token = new JwtSecurityToken(
                 claims: claims,
                 signingCredentials: signingCredentials,
